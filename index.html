@@ -1,15 +1,18 @@
 <!DOCTYPE html>
 <html>
 <head>
+
 <title>Global War Live Tracker</title>
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+
 <style>
 
 body{
-font-family:Arial;
 margin:0;
+font-family:Arial;
 background:#0f172a;
 color:white;
 }
@@ -18,7 +21,7 @@ header{
 background:#dc2626;
 padding:15px;
 text-align:center;
-font-size:24px;
+font-size:22px;
 font-weight:bold;
 }
 
@@ -29,8 +32,8 @@ flex-wrap:wrap;
 
 .news{
 flex:1;
-padding:20px;
 min-width:300px;
+padding:15px;
 }
 
 .map{
@@ -40,15 +43,19 @@ min-width:300px;
 
 .card{
 background:#1e293b;
-padding:15px;
-margin-bottom:15px;
-border-radius:10px;
+padding:12px;
+margin-bottom:10px;
+border-radius:8px;
 }
 
-iframe{
+#map{
+height:420px;
 width:100%;
-height:400px;
-border:none;
+}
+
+a{
+color:#38bdf8;
+text-decoration:none;
 }
 
 </style>
@@ -65,7 +72,7 @@ border:none;
 
 <div class="news">
 
-<h2>Latest Updates</h2>
+<h2>Latest War News</h2>
 
 <div id="news">Loading news...</div>
 
@@ -73,27 +80,46 @@ border:none;
 
 <div class="map">
 
-<h2 style="padding:20px;">Live World Map</h2>
-
-<iframe src="https://www.google.com/maps/embed"></iframe>
+<div id="map"></div>
 
 </div>
 
 </div>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
 <script>
 
+var map = L.map('map').setView([30,35],4);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+maxZoom:19
+}).addTo(map);
+
+/* Example attack markers */
+
+L.marker([32.0,53.0]).addTo(map)
+.bindPopup("Iran Military Activity");
+
+L.marker([31.7,35.2]).addTo(map)
+.bindPopup("Israel Defense Alert");
+
+L.marker([33.3,44.3]).addTo(map)
+.bindPopup("US Base Iraq Alert");
+
+/* NEWS */
+
 function loadNews(){
 
-const rssUrl =
+const rss =
 "https://api.allorigins.win/get?url=" +
-encodeURIComponent("https://news.google.com/rss/search?q=Iran+USA+war&hl=en-US&gl=US&ceid=US:en");
+encodeURIComponent("https://news.google.com/rss/search?q=war+attack+missile&hl=en-US&gl=US&ceid=US:en");
 
-fetch(rssUrl)
+fetch(rss)
 
-.then(res => res.json())
+.then(res=>res.json())
 
-.then(data => {
+.then(data=>{
 
 let parser = new DOMParser();
 
@@ -101,20 +127,19 @@ let xml = parser.parseFromString(data.contents,"text/xml");
 
 let items = xml.querySelectorAll("item");
 
-let html = "";
+let html="";
 
 items.forEach((el,i)=>{
 
-if(i<8){
+if(i<10){
 
-let title = el.querySelector("title").textContent;
+let title=el.querySelector("title").textContent;
+let link=el.querySelector("link").textContent;
 
-let link = el.querySelector("link").textContent;
-
-html += `
+html+=`
 <div class="card">
-<h3>${title}</h3>
-<a href="${link}" target="_blank">Read More</a>
+${title}<br>
+<a href="${link}" target="_blank">Read more</a>
 </div>
 `;
 
@@ -122,7 +147,7 @@ html += `
 
 });
 
-document.getElementById("news").innerHTML = html;
+document.getElementById("news").innerHTML=html;
 
 });
 
