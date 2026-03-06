@@ -2,11 +2,9 @@
 <html>
 <head>
 
-<title>Global War Live Tracker</title>
+<title>Global War Command Center</title>
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
-<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 
 <style>
 
@@ -21,41 +19,41 @@ header{
 background:#dc2626;
 padding:15px;
 text-align:center;
-font-size:22px;
+font-size:24px;
 font-weight:bold;
 }
 
-.container{
-display:flex;
-flex-wrap:wrap;
-}
+.grid{
 
-.news{
-flex:1;
-min-width:300px;
-padding:15px;
-}
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+padding:10px;
 
-.map{
-flex:1;
-min-width:300px;
 }
 
 .card{
+
 background:#1e293b;
-padding:12px;
-margin-bottom:10px;
-border-radius:8px;
+border-radius:10px;
+padding:10px;
+
 }
 
-#map{
-height:420px;
+iframe{
+
 width:100%;
+height:350px;
+border:none;
+
 }
 
-a{
-color:#38bdf8;
-text-decoration:none;
+@media(max-width:800px){
+
+.grid{
+grid-template-columns:1fr;
+}
+
 }
 
 </style>
@@ -65,106 +63,42 @@ text-decoration:none;
 <body>
 
 <header>
-🌍 MACHO Global War Live Tracker
+🌍 Global War with Macho
 </header>
-<h2 style="padding:15px;">Live War News Video</h2>
 
-<iframe width="100%" height="400"
-src="https://www.youtube.com/embed/21X5lGlDOfg"
-title="Live News"
-frameborder="0"
-allowfullscreen>
-</iframe>
-<div class="container">
+<div class="grid">
 
-<div class="news">
-
-<h2>Latest War News</h2>
-
-<div id="news">Loading news...</div>
-
-</div>
-
-<div class="map">
-
-<div id="map"></div>
-
-</div>
-
-</div>
-
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-
-<script>
-
-var map = L.map('map').setView([30,35],4);
-
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
-maxZoom:19
-}).addTo(map);
-
-/* Example attack markers */
-
-L.marker([32.0,53.0]).addTo(map)
-.bindPopup("Iran Military Activity");
-
-L.marker([31.7,35.2]).addTo(map)
-.bindPopup("Israel Defense Alert");
-
-L.marker([33.3,44.3]).addTo(map)
-.bindPopup("US Base Iraq Alert");
-
-/* NEWS */
-
-function loadNews(){
-
-const rss =
-"https://api.allorigins.win/get?url=" +
-encodeURIComponent("https://news.google.com/rss/search?q=war+attack+missile&hl=en-US&gl=US&ceid=US:en");
-
-fetch(rss)
-
-.then(res=>res.json())
-
-.then(data=>{
-
-let parser = new DOMParser();
-
-let xml = parser.parseFromString(data.contents,"text/xml");
-
-let items = xml.querySelectorAll("item");
-
-let html="";
-
-items.forEach((el,i)=>{
-
-if(i<10){
-
-let title=el.querySelector("title").textContent;
-let link=el.querySelector("link").textContent;
-
-html+=`
 <div class="card">
-${title}<br>
-<a href="${link}" target="_blank">Read more</a>
+<h3>Real Satellite Earth</h3>
+<iframe src="https://earth.nullschool.net/"></iframe>
 </div>
-`;
 
-}
+<div class="card">
+<h3>World Conflict Dashboard</h3>
+<iframe src="https://liveuamap.com/"></iframe>
+</div>
 
-});
+<div class="card">
+<h3>Aircraft Radar</h3>
+<iframe src="https://globe.adsbexchange.com/"></iframe>
+</div>
 
-document.getElementById("news").innerHTML=html;
+<div class="card">
+<h3>Warship Tracker</h3>
+<iframe src="https://www.marinetraffic.com/en/ais/embed/zoom:3"></iframe>
+</div>
 
-});
+<div class="card">
+<h3>Weather Radar</h3>
+<iframe src="https://embed.windy.com/embed2.html?lat=25&lon=45&zoom=4&level=surface&overlay=radar"></iframe>
+</div>
 
-}
+<div class="card">
+<h3>Live CCTV</h3>
+<iframe src="https://www.youtube.com/embed/live_stream?channel=UC16niRr50-MSBwiO3YDb3RA"></iframe>
+</div>
 
-loadNews();
-
-setInterval(loadNews,30000);
-
-</script>
+</div>
 
 </body>
 </html>
